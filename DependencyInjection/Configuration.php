@@ -19,7 +19,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('blog');
+        $rootNode    = $treeBuilder->root('blog');
 
         $rootNode->addDefaultsIfNotSet()
             ->children()
@@ -28,7 +28,10 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('items')->defaultValue(12)->end()
             ->scalarNode('ga_tracking')->defaultValue('')->end()
             ->scalarNode('locale')->defaultValue('en')->end()
-            ->scalarNode('default_image')->defaultValue(false)->end()
+            ->scalarNode('default_image')
+            ->isRequired()
+            ->cannotBeEmpty()
+            ->end()
             ->scalarNode('upload_dir')->defaultValue('%kernel.root_dir%/../web/uploads')->end()
             ->scalarNode('upload_url')->defaultValue('/uploads')->end()
             ->append($this->createSearchSection())
@@ -42,7 +45,7 @@ class Configuration implements ConfigurationInterface
     private function createSearchSection()
     {
         $builder = new TreeBuilder();
-        $node = $builder->root('search');
+        $node    = $builder->root('search');
         $node
             ->addDefaultsIfNotSet()
             ->children()
@@ -71,7 +74,7 @@ class Configuration implements ConfigurationInterface
     private function createSiteMapSection()
     {
         $builder = new TreeBuilder();
-        $node = $builder->root('sitemap');
+        $node    = $builder->root('sitemap');
         $node->addDefaultsIfNotSet()
             ->children()
             ->scalarNode('items')->defaultValue(2000)->end()
@@ -83,7 +86,7 @@ class Configuration implements ConfigurationInterface
     private function createRSSSection()
     {
         $builder = new TreeBuilder();
-        $node = $builder->root('rss');
+        $node    = $builder->root('rss');
         $node->addDefaultsIfNotSet()
             ->children()
             ->scalarNode('title')->defaultValue('RSS Feed')->end()
