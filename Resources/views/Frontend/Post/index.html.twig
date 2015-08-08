@@ -1,31 +1,36 @@
 {% extends "::frontend.html.twig" %}
 {% block title %} {{ parent() }} {% if page != 1 %}| Página {{ page }} {% endif %}{% endblock %}
-{% block canonical %}<link rel="canonical" href="{{ url('_blog_default', { 'page' : page }) }}"/>{% endblock %}
-{% block meta_description %}{{ pagination.current.intro | striptags | truncate(150) }}{% endblock %}
-{% block meta_keywords %}{% for tag in pagination.current.tags %}{{ tag }}, {% endfor %}{% endblock %}
+{% block canonical %}
+    <link rel="canonical" href="{{ url('_blog_default', { 'page' : page }) }}"/>{% endblock %}
+{% if pagination.current %}{% block meta_description %}{{ pagination.current.intro | striptags | truncate(150) }}{% endblock %}
+    {% block meta_keywords %}{% for tag in pagination.current.tags %}{{ tag }}, {% endfor %}{% endblock %}{% endif %}
 {% block meta_og %}
-  {{ parent() }}
-  <meta property="og:title" content="{{ pagination.current }}"/>
-  <meta property="og:url" content="{{ url('_blog_default', { 'page' : page }) }}"/>
-  <meta property="og:description" content="{{ pagination.current.intro | striptags | raw | truncate(150) }}"/>
-  {% if pagination.current.hasImage %}
-    <meta property="og:image" content="{{ pagination.current.image }}"/>
-  {% endif %}
+    {{ parent() }}
+    <meta property="og:url" content="{{ url('_blog_default', { 'page' : page }) }}"/>
+    {% if pagination.current %}
+        <meta property="og:title" content="{{ pagination.current }}"/>
+        <meta property="og:description" content="{{ pagination.current.intro | striptags | raw | truncate(150) }}"/>
+        {% if pagination.current.hasImage %}
+            <meta property="og:image" content="{{ pagination.current.image }}"/>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 {% block meta_twiter %}
-  {{ parent() }}
-  <meta property="twitter:title" content="{{ pagination.current }}"/>
-  <meta property="twitter:description" content="{{ pagination.current.intro | striptags | raw | truncate(150) }}"/>
-  {% if pagination.current.hasImage %}
-    <meta property="twitter:image:src" content="{{ pagination.current.image }}"/>
-  {% endif %}
+    {{ parent() }}
+    {% if pagination.current %}
+        <meta property="twitter:title" content="{{ pagination.current }}"/>
+        <meta property="twitter:description"
+              content="{{ pagination.current.intro | striptags | raw | truncate(150) }}"/>
+        {% if pagination.current.hasImage %}
+            <meta property="twitter:image:src" content="{{ pagination.current.image }}"/>
+        {% endif %}{% endif %}
 {% endblock %}
 {% block content %}
-  {% for post in pagination %}
-    {% include 'BlogBundle:Frontend/Post:item.html.twig' with {'post': post} %}
-  {% else %}
-    <p>No hay elementos</p>
-  {% endfor %}
+    {% for post in pagination %}
+        {% include 'BlogBundle:Frontend/Post:item.html.twig' with {'post': post} %}
+    {% else %}
+        <p>No hay elementos</p>
+    {% endfor %}
 
-  <div class="navigation row">{{ knp_pagination_render(pagination) }}</div>
+    <div class="navigation row">{{ knp_pagination_render(pagination) }}</div>
 {% endblock %}
